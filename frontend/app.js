@@ -37,4 +37,28 @@ document.getElementById('login-button').addEventListener('click', async () => {
     const message = document.getElementById('login-message');
 
     if (response.ok) {
-        message.textContent =
+        message.textContent = 'Login successful!';
+        message.style.color = 'green';
+        localStorage.setItem('token', result.token);
+    } else {
+        message.textContent = result.message;
+        message.style.color = 'red';
+    }
+});
+
+// Load Books
+document.getElementById('load-books').addEventListener('click', async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${apiBaseUrl}/books`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const books = await response.json();
+    const booksList = document.getElementById('books-list');
+    booksList.innerHTML = '';
+    books.forEach(book => {
+        const bookDiv = document.createElement('div');
+        bookDiv.textContent = `${book.book} by ${book.author}`;
+        booksList.appendChild(bookDiv);
+    });
+});

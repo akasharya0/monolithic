@@ -1,15 +1,23 @@
 {
   "name": "express-vercel-api",
   "version": "1.0.0",
-  "type": "module",  // Ensure ESM compatibility
+  "description": "A simple Express app hosted on Vercel",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.5.1",
-    "dotenv": "^8.2.0"
+    "jsonwebtoken": "^8.5.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "start": "node api/index.js"
+  "devDependencies": {
+    "vercel": "^23.0.0"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

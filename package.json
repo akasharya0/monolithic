@@ -1,0 +1,16 @@
+{
+    "name": "bookstore-backend",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+      "dev": "vercel dev",
+      "start": "vercel dev"
+    },
+    "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "dotenv": "^10.0.0",
+      "express": "^4.17.1",
+      "jsonwebtoken": "^8.5.1"
+    }
+  }
+  

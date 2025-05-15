@@ -1,16 +1,15 @@
 {
-    "name": "bookstore-backend",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-      "dev": "vercel dev",
-      "start": "vercel dev"
-    },
-    "dependencies": {
-      "bcryptjs": "^2.4.3",
-      "dotenv": "^10.0.0",
-      "express": "^4.17.1",
-      "jsonwebtoken": "^8.5.1"
-    }
+  "name": "express-vercel-api",
+  "version": "1.0.0",
+  "type": "module",  // Ensure ESM compatibility
+  "dependencies": {
+    "express": "^4.17.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node api/index.js"
   }
-  
+}

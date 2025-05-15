@@ -1,36 +1,70 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 
+const app = express.Router();
+
+app.use(express.json());
+
+// In-memory users database (for demonstration purposes)
 let users = [];
 
-export default async function handler(req, res) {
-  if (req.method === 'POST' && req.url.includes('/register')) {
-    const { username, password } = req.body;
-    const existingUser = users.find(user => user.username === username);
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
+// Register Route (POST /register)
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    users.push({ username, password: hashedPassword });
-    return res.status(201).json({ message: 'User registered successfully' });
+  const existingUser = users.find(user => user.username === username);
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
   }
 
-  if (req.method === 'POST' && req.url.includes('/login')) {
-    const { username, password } = req.body;
-    const user = users.find(user => user.username === username);
-    if (!user) {
-      return res.status(400).json({ message: 'User not found' });
-    }
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
+  users.push({ username, password: hashedPassword });
+  res.status(201).json({ message: 'User registered successfully' });
+});
 
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '2h' });
-    return res.status(200).json({ token });
+// Login Route (POST /login)
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find(user => user.username === username);
+  if (!user) {
+    return res.status(400).json({ message: 'User not found' });
   }
 
-  res.status(404).json({ message: 'Route not found' });
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '2h' });
+
+  res.status(200).json({ token });
+});
+
+// Protected Route (GET /protected)
+app.get('/protected', authenticateToken, (req, res) => {
+  res.status(200).json({ message: 'You have access to this protected route!' });
+});
+
+// Middleware to authenticate JWT token
+function authenticateToken(req, res, next) {
+  const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];  // Get token from "Authorization" header
+
+  if (!token) {
+    return res.status(403).json({ message: 'Access denied. No token provided.' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
+    req.user = user;  // Store user info for use in protected routes
+    next();
+  });
 }
+
+module.exports = app;

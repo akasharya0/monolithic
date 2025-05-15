@@ -1,4 +1,4 @@
-const apiBaseUrl = 'https://your-project-name.vercel.app/api';
+const apiBaseUrl = 'https://your-vercel-project-url/api';
 
 // Register User
 document.getElementById('register-button').addEventListener('click', async () => {
@@ -37,42 +37,4 @@ document.getElementById('login-button').addEventListener('click', async () => {
     const message = document.getElementById('login-message');
 
     if (response.ok) {
-        message.textContent = 'Login successful!';
-        message.style.color = 'green';
-        localStorage.setItem('token', result.token);  // Store JWT Token
-    } else {
-        message.textContent = result.message;
-        message.style.color = 'red';
-    }
-});
-
-// Load Books
-document.getElementById('load-books').addEventListener('click', async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('Please login to view books!');
-        return;
-    }
-
-    const response = await fetch(`${apiBaseUrl}/books`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
-    const books = await response.json();
-    const booksList = document.getElementById('books-list');
-    booksList.innerHTML = ''; // Clear previous results
-
-    if (Array.isArray(books)) {
-        books.forEach(book => {
-            const bookItem = document.createElement('div');
-            bookItem.textContent = `${book.book} by ${book.author}`;
-            booksList.appendChild(bookItem);
-        });
-    } else {
-        booksList.innerHTML = 'No books available.';
-    }
-});
+        message.textContent =

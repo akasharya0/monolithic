@@ -10,12 +10,10 @@ let todo = {
 
 export default function handler(req, res) {
   if (req.method === 'GET' && req.url === '/api/books') {
-    // Get all books (GET /api/books)
     return res.json(todo);
   }
 
   if (req.method === 'GET' && req.url.includes('/api/books/')) {
-    // Get a book by id (GET /api/books/:id)
     const findbook = todo.data.find(item => item.id === parseInt(req.query.id));
     if (!findbook) {
       return res.status(404).json({ message: 'Book not found' });
@@ -24,7 +22,6 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'POST' && req.url === '/api/books') {
-    // Add a new book (POST /api/books)
     const { book, author } = req.body;
     if (!book || !author) {
       return res.status(400).json({ message: 'Book title and author are required.' });
@@ -36,7 +33,6 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'PUT' && req.url.includes('/api/books/update')) {
-    // Update a book by id (PUT /api/books/update/:id)
     const { book, author } = req.body;
     const findId = todo.data.find(item => item.id === parseInt(req.query.id));
     if (!findId) {
@@ -51,7 +47,6 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'DELETE' && req.url.includes('/api/books/delete')) {
-    // Delete a book by id (DELETE /api/books/delete/:id)
     const findId = todo.data.findIndex(item => item.id === parseInt(req.query.id));
     if (findId === -1) {
       return res.status(404).json({ message: 'Book not found' });

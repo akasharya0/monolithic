@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="auth-container">
+        <h1>Book App</h1>
+
+        <!-- Register Form -->
+        <div id="register-form">
+            <h2>Register</h2>
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="password" id="register-password" placeholder="Password">
+            <button id="register-button">Register</button>
+            <p id="register-message"></p>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button id="login-button">Login</button>
+            <p id="login-message"></p>
+        </div>
+
+        <!-- Books Section -->
+        <div id="books-container">
+            <h2>Books</h2>
+            <button id="load-books">Load Books</button>
+            <div id="books-list"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

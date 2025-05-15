@@ -1,59 +1,68 @@
-let todo = {
-  status: "success",
-  data: [
+const express = require('express');
+const app = express.Router();
+
+let books = [
     { id: 1, book: "To Kill a Mockingbird", author: "Harper Lee" },
     { id: 2, book: "1984", author: "George Orwell" },
     { id: 3, book: "The Great Gatsby", author: "F. Scott Fitzgerald" },
     { id: 4, book: "Moby-Dick", author: "Herman Melville" }
-  ]
-};
+];
 
-export default function handler(req, res) {
-  if (req.method === 'GET' && req.url === '/api/books') {
-    return res.json(todo);
-  }
+// Get all books
+app.get('/books', (req, res) => {
+    res.json(books);
+});
 
-  if (req.method === 'GET' && req.url.includes('/api/books/')) {
-    const findbook = todo.data.find(item => item.id === parseInt(req.query.id));
-    if (!findbook) {
-      return res.status(404).json({ message: 'Book not found' });
+// Get a book by id
+app.get('/books/:id', (req, res) => {
+    const book = books.find(item => item.id === parseInt(req.params.id));
+    if (!book) {
+        return res.status(404).json({ message: 'Book not found' });
     }
-    return res.json(findbook);
-  }
+    res.json(book);
+});
 
-  if (req.method === 'POST' && req.url === '/api/books') {
+// Add a new book
+app.post('/books', (req, res) => {
     const { book, author } = req.body;
     if (!book || !author) {
-      return res.status(400).json({ message: 'Book title and author are required.' });
+        return res.status(400).json({ message: 'Book title and author are required.' });
     }
-    const newId = Math.max(...todo.data.map(item => item.id)) + 1;
-    const newbook = { id: newId, book, author };
-    todo.data.push(newbook);
-    return res.status(201).json(newbook);
-  }
+    const newId = books.length ? Math.max(...books.map(item => item.id)) + 1 : 1;
+    const newBook = { id: newId, book, author };
+    books.push(newBook);
+    res.status(201).json(newBook);
+});
 
-  if (req.method === 'PUT' && req.url.includes('/api/books/update')) {
+// Update a book by id
+app.put('/books/update/:id', (req, res) => {
     const { book, author } = req.body;
-    const findId = todo.data.find(item => item.id === parseInt(req.query.id));
-    if (!findId) {
-      return res.status(404).json({ message: 'Book not found' });
+    const bookIndex = books.findIndex(item => item.id === parseInt(req.params.id));
+
+    if (bookIndex === -1) {
+        return res.status(404).json({ message: 'Book not found' });
     }
+
     if (!book || !author) {
-      return res.status(400).json({ message: 'Book title and author are required.' });
+        return res.status(400).json({ message: 'Book title and author are required.' });
     }
-    findId.book = book;
-    findId.author = author;
-    return res.json(todo.data);
-  }
 
-  if (req.method === 'DELETE' && req.url.includes('/api/books/delete')) {
-    const findId = todo.data.findIndex(item => item.id === parseInt(req.query.id));
-    if (findId === -1) {
-      return res.status(404).json({ message: 'Book not found' });
+    books[bookIndex].book = book;
+    books[bookIndex].author = author;
+
+    res.json(books);
+});
+
+// Delete a book by id
+app.delete('/books/delete/:id', (req, res) => {
+    const bookIndex = books.findIndex(item => item.id === parseInt(req.params.id));
+
+    if (bookIndex === -1) {
+        return res.status(404).json({ message: 'Book not found' });
     }
-    todo.data.splice(findId, 1);
-    return res.status(200).json({ message: 'Book deleted successfully', books: todo.data });
-  }
 
-  res.status(404).json({ message: 'Route not found' });
-}
+    books.splice(bookIndex, 1);
+    res.status(200).json({ message: 'Book deleted successfully', books });
+});
+
+module.exports = app;
